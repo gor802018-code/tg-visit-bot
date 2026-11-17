@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass, field
-from pathlib import Path
 from typing import Any
+
+from src.config import load_config
 
 STATE_START = "start"
 STATE_ASK_QUESTION = "ask_question"
@@ -28,11 +28,6 @@ class Answer:
     buttons: list[list[Button]] = field(default_factory=list)
     admin_notice: str | None = None
     state: str = STATE_START
-
-
-def load_config(path: str | Path) -> dict[str, Any]:
-    with Path(path).open(encoding="utf-8") as handle:
-        return json.load(handle)
 
 
 def _services_menu(config: dict[str, Any]) -> list[list[Button]]:

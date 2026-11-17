@@ -1,0 +1,15 @@
+services:
+  bot:
+    build: .
+    image: tg-visit-bot:latest
+    container_name: tg-visit-bot
+    env_file:
+      - .env
+    restart: unless-stopped
+    volumes:
+      - ./config:/app/config:ro
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"

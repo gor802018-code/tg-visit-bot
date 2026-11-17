@@ -16,28 +16,54 @@
 
 ```
 config/scenario.json   тексты, услуги, цены, слоты, реквизиты
+src/config.py          схема конфигурации на pydantic и проверка при старте
 src/scenario.py        сценарий: чистая логика, без Telegram
 src/telegram.py        клиент Bot API на стандартной библиотеке
 src/bot.py             запуск бота (long polling)
 src/console_demo.py    прогон сценария в консоли
 tests/test_scenario.py тесты сценария
+tests/test_config.py   тесты проверки конфигурации
 ```
 
 ## Запуск
 
-1. Скопируйте `.env.example` в `.env` и вставьте токен от `@BotFather`:
+1. Установите зависимость:
+
+```
+py -3 -m pip install -r requirements.txt
+```
+
+2. Скопируйте `.env.example` в `.env` и вставьте токен от `@BotFather`:
 
 ```
 BOT_TOKEN=123456:AA...
 ```
 
-2. Запустите бота:
+3. Запустите бота:
 
 ```
-py -3 src/bot.py
+py -3 -m src.bot
 ```
 
-Зависимостей нет: только стандартная библиотека Python 3.11+.
+Нужен Python 3.11+ и `pydantic`. Остальное — стандартная библиотека.
+
+## Запуск в Docker
+
+```
+docker compose up -d
+docker compose logs -f
+```
+
+Токен берётся из `.env`, папка `config/` монтируется внутрь как read-only — тексты можно править без пересборки, достаточно перезапустить контейнер. Для сдачи заказчику: `docker compose up -d` на его сервере и всё.
+
+## Проверка конфигурации
+
+Конфиг проверяется при старте через pydantic. Если клиент сломал JSON или перепутал тип поля, бот не упадёт с трейсбеком, а напишет понятное сообщение:
+
+```
+Конфигурация заполнена неверно:
+  services.0.price: Input should be greater than 0
+```
 
 ## Проверка без Telegram
 

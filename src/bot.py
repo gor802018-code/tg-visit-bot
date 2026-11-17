@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from src.config import ConfigError
 from src.scenario import (
     STATE_ASK_QUESTION,
     Answer,
@@ -97,7 +98,12 @@ def main() -> int:
         LOGGER.error("BOT_TOKEN не задан. Скопируйте .env.example в .env и вставьте токен от @BotFather.")
         return 1
 
-    config = load_config(CONFIG_PATH)
+    try:
+        config = load_config(CONFIG_PATH)
+    except ConfigError as error:
+        LOGGER.error("%s", error)
+        return 1
+
     client = TelegramClient(token)
     states: dict[int, str] = {}
     offset: int | None = None
