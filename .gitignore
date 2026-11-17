@@ -3,5 +3,6 @@
 __pycache__/
 *.pyc
 screenshots/
+kwork/
 .idea/
 .DS_Store
